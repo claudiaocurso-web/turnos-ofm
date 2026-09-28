@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OftalmoCare | Consultorios Oftalmológicos & Turnos</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            pastel: {
+              mint: '#D8F3DC',
+              mintDark: '#95D5B2',
+              sage: '#B7E4C7',
+              deepSage: '#52B788',
+              forest: '#2D6A4F',
+              lavender: '#EAE4F8',
+              lavenderLight: '#F3F0FB',
+              lavenderDark: '#C7B9F1',
+              lavenderDeep: '#7B5EA7',
+              lavenderText: '#4A3B69',
+            }
+          },
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #FAF9FD; }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(234, 228, 248, 0.9);
+    }
+  </style>
+</head>
+<body class="text-slate-800 antialiased selection:bg-pastel-lavenderDark selection:text-pastel-lavenderText">
+
+  <!-- NAVBAR -->
+  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-pastel-lavender shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        <div class="flex items-center gap-3 cursor-pointer" onclick="switchView('patient')">
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-pastel-deepSage via-pastel-mint to-pastel-lavenderDark flex items-center justify-center shadow-md">
+            <i data-lucide="eye" class="w-7 h-7 text-pastel-forest"></i>
+          </div>
+          <div>
+            <span class="text-2xl font-extrabold bg-gradient-to-r from-pastel-forest via-pastel-deepSage to-pastel-lavenderDeep bg-clip-text text-transparent">
+              OftalmoCare
+            </span>
+            <p class="text-xs text-slate-500 font-medium">Consultorios Oftalmológicos</p>
+          </div>
+        </div>
+
+        <nav class="hidden md:flex items-center gap-6">
+          <button onclick="switchView('patient')" class="text-sm font-semibold text-pastel-forest hover:text-pastel-deepSage">Inicio</button>
+          <a href="#servicios" class="text-sm font-semibold text-slate-600 hover:text-pastel-forest">Especialidades</a>
+          <button onclick="openAIModal()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-pastel-lavender/60 text-pastel-lavenderDeep hover:bg-pastel-lavender text-sm font-semibold border border-pastel-lavenderDark/40">
+            <i data-lucide="sparkles" class="w-4 h-4 text-pastel-lavenderDeep"></i>
+            <span>Asistente Gemini AI</span>
+          </button>
+        </nav>
+
+        <div class="flex items-center gap-3">
+          <div class="bg-pastel-lavenderLight p-1 rounded-xl flex items-center border border-pastel-lavender">
+            <button id="btnNavPatient" onclick="switchView('patient')" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-pastel-forest shadow-sm">Pacientes</button>
+            <button id="btnNavAdmin" onclick="switchView('admin')" class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-500 hover:text-slate-800">Panel Médico</button>
+          </div>
+          <button onclick="openBookingModal()" class="hidden sm:flex items-center gap-2 px-4 py-2.5 rounded-xl bg-pastel-deepSage hover:bg-pastel-forest text-white font-bold text-sm shadow-md transition-all">
+            <i data-lucide="calendar" class="w-4 h-4"></i>
+            <span>Reservar Turno</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- VISTA PACIENTE -->
+  <main id="patientView">
+    <!-- HERO -->
+    <section class="relative overflow-hidden py-16 lg:py-20 border-b border-pastel-lavender/60 bg-gradient-to-br from-pastel-mint/30 via-[#FAF9FD] to-pastel-lavender/30">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          <div class="lg:col-span-7 space-y-6">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-pastel-mint text-pastel-forest text-xs font-bold border border-pastel-mintDark/40 shadow-sm">
+              <span class="w-2 h-2 rounded-full bg-pastel-deepSage animate-ping"></span>
+              <span>Agenda Online 24/7 con Confirmación por WhatsApp</span>
+            </div>
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 leading-tight">
+              Cuidamos tu visión con <span class="bg-gradient-to-r from-pastel-forest via-pastel-deepSage to-pastel-lavenderDeep bg-clip-text text-transparent">tecnología médica</span> y calidez humana.
+            </h1>
+            <p class="text-lg text-slate-600 max-w-xl">
+              Atención oftalmológica integral en Retina, Cataratas, Glaucoma y Pediatría. Reserva tu consulta en segundos, recibe recordatorios personalizados a tu WhatsApp y orienta tus síntomas con Google Gemini.
+            </p>
+            <div class="flex flex-wrap items-center gap-4 pt-2">
+              <button onclick="openBookingModal()" class="flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-pastel-deepSage hover:bg-pastel-forest text-white font-bold text-sm shadow-md transition-all">
+                <i data-lucide="calendar" class="w-5 h-5"></i>
+                <span>Reservar Turno Oftalmológico</span>
+              </button>
+              <button onclick="openAIModal()" class="flex items-center gap-2 px-5 py-3.5 rounded-2xl bg-white hover:bg-pastel-lavenderLight text-pastel-lavenderDeep font-bold text-sm border-2 border-pastel-lavenderDark/60 shadow-sm transition-all">
+                <i data-lucide="sparkles" class="w-5 h-5"></i>
+                <span>Asistente Gemini AI</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="lg:col-span-5">
+            <div class="glass-card rounded-3xl p-6 shadow-xl border border-pastel-lavender space-y-5">
+              <div class="flex items-center justify-between pb-3 border-b border-pastel-lavender">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-xl bg-pastel-mint flex items-center justify-center text-pastel-forest">
+                    <i data-lucide="calendar" class="w-5 h-5"></i>
+                  </div>
+                  <div>
+                    <h3 class="font-bold text-slate-800 text-sm">Disponibilidad Inmediata</h3>
+                    <p class="text-xs text-slate-500">Consultorios Oftalmológicos</p>
+                  </div>
+                </div>
+                <span class="px-2.5 py-1 rounded-full bg-pastel-lavender text-pastel-lavenderDeep text-xs font-bold">Hoy Abierto</span>
+              </div>
+              <div id="heroDoctorsList" class="space-y-3"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ESPECIALIDADES -->
+    <section id="servicios" class="py-20 bg-white border-b border-pastel-lavender/60">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-3xl mx-auto space-y-3 mb-16">
+          <span class="px-3 py-1 rounded-full bg-pastel-lavenderLight text-pastel-lavenderDeep text-xs font-bold border border-pastel-lavender">Atención Médica Integral</span>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900">Nuestras Especialidades Oftalmológicas</h2>
+          <p class="text-sm text-slate-600">Diagnóstico certero con equipamiento de alta resolución. Selecciona tu estudio para reservar turno.</p>
+        </div>
+        <div id="servicesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- VISTA PANEL MÉDICO -->
+  <main id="adminView" class="hidden py-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div>
+        <span class="px-3 py-1 rounded-full bg-pastel-lavender text-pastel-lavenderDeep text-xs font-bold">Panel Interno</span>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">Gestión de Turnos, WhatsApp y Vacaciones</h1>
+        <p class="text-xs text-slate-500">Control central para profesionales oftalmólogos y secretaría.</p>
+      </div>
+      <div class="bg-white p-1.5 rounded-2xl border border-pastel-lavender shadow-sm flex items-center gap-1">
+        <button id="tabBtnAppointments" onclick="switchAdminTab('appointments')" class="px-4 py-2 rounded-xl text-xs font-bold bg-pastel-deepSage text-white">Turnos & WhatsApp</button>
+        <button id="tabBtnBlocks" onclick="switchAdminTab('blocks')" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900">Bloqueos & Vacaciones</button>
+      </div>
+    </div>
+
+    <!-- SUBTAB TURNOS -->
+    <div id="adminTabAppointments" class="space-y-6">
+      <div class="bg-white rounded-3xl border border-pastel-lavender shadow-sm overflow-hidden">
+        <div class="p-6 border-b border-pastel-lavender flex items-center justify-between bg-pastel-lavenderLight/30">
+          <div>
+            <h3 class="text-base font-bold text-slate-900">Agenda de Turnos Médicos</h3>
+            <p class="text-xs text-slate-500">Envía recordatorios pre-consulta al WhatsApp del paciente con un solo clic.</p>
+          </div>
+          <button onclick="openBookingModal()" class="px-3 py-1.5 rounded-xl bg-pastel-mint text-pastel-forest font-bold text-xs">+ Nuevo Turno</button>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b border-pastel-lavender bg-slate-50/70 text-[11px] font-bold uppercase text-slate-500">
+                <th class="py-3 px-5">Paciente</th>
+                <th class="py-3 px-5">Especialidad & Médico</th>
+                <th class="py-3 px-5">Fecha & Hora</th>
+                <th class="py-3 px-5">Estado</th>
+                <th class="py-3 px-5 text-right">Acción WhatsApp</th>
+              </tr>
+            </thead>
+            <tbody id="appointmentsTableBody" class="divide-y divide-pastel-lavenderLight text-xs"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUBTAB BLOQUEOS & VACACIONES -->
+    <div id="adminTabBlocks" class="hidden space-y-6">
+      <!-- FORM BLOQUEO -->
+      <div class="bg-white rounded-3xl p-6 border border-pastel-lavender shadow-sm">
+        <h3 class="text-base font-bold text-slate-900 mb-4">Registrar Vacaciones o Bloqueo de Horarios para Médicos</h3>
+        <form onsubmit="handleCreateBlock(event)" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Médico Oftalmólogo</label>
+            <select id="blockDoctorSelect" class="w-full p-2.5 rounded-xl border border-pastel-lavender text-xs font-semibold outline-none"></select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Tipo de Bloqueo</label>
+            <select id="blockTypeSelect" class="w-full p-2.5 rounded-xl border border-pastel-lavender text-xs font-semibold outline-none">
+              <option value="Vacaciones">🏖️ Vacaciones / Licencia Anual</option>
+              <option value="Franja Horaria">⏰ Bloqueo Horario (Cirugía)</option>
+              <option value="Congreso">🎓 Congreso Médico</option>
+              <option value="Licencia">🩺 Licencia Médica</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Fecha Desde</label>
+            <input type="date" id="blockStartDate" required class="w-full p-2.5 rounded-xl border border-pastel-lavender text-xs font-semibold">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Fecha Hasta</label>
+            <input type="date" id="blockEndDate" required class="w-full p-2.5 rounded-xl border border-pastel-lavender text-xs font-semibold">
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-bold text-slate-700 mb-1">Motivo / Detalle</label>
+            <input type="text" id="blockReason" required placeholder="Ej: Vacaciones de verano, Congreso de Glaucoma..." class="w-full p-2.5 rounded-xl border border-pastel-lavender text-xs font-medium">
+          </div>
+          <div class="sm:col-span-2 flex justify-end">
+            <button type="submit" class="px-5 py-2.5 rounded-xl bg-pastel-lavenderDeep text-white text-xs font-bold shadow-sm hover:opacity-90">
+              Aplicar Bloqueo
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- LISTA BLOQUEOS -->
+      <div class="bg-white rounded-3xl p-6 border border-pastel-lavender shadow-sm">
+        <h4 class="text-sm font-bold text-slate-900 mb-4">Bloqueos de Agenda Activos</h4>
+        <div id="blocksList" class="divide-y divide-pastel-lavenderLight"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- MODAL RESERVA DE TURNOS -->
+  <div id="bookingModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+    <div class="bg-white w-full max-w-xl rounded-3xl shadow-2xl border border-pastel-lavender overflow-hidden max-h-[90vh] flex flex-col">
+      <div class="px-6 py-4 bg-gradient-to-r from-pastel-mint via-pastel-lavenderLight to-pastel-lavender flex items-center justify-between border-b border-pastel-lavender">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-white flex items-center justify-center text-pastel-forest shadow-sm">
+            <i data-lucide="calendar" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-slate-900">Reserva de Turno Oftalmológico</h3>
+            <p class="text-xs text-slate-500">Confirmación directa por WhatsApp</p>
+          </div>
+        </div>
+        <button onclick="closeBookingModal()" class="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center text-slate-600 hover:text-slate-900">✕</button>
+      </div>
+
+      <form onsubmit="handleConfirmBooking(event)" class="p-6 overflow-y-auto space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Especialidad</label>
+          <select id="modalService" class="w-full p-2.5 rounded-xl border border-pastel-lavender text-xs font-semibold"></select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Médico Oftalmólogo</label>
+          <select id="modalDoctor" onchange="checkSelectedDateBlock()" class="w-full p-2.5 rounded-xl border border-pastel-lavender text-xs font-semibold"></select>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Fecha</label>
+            <input type="date" id="modalDate" required onchange="checkSelectedDateBlock()" class="w-full p-2.5 rounded-xl border border-pastel-lavender text-xs font-semibold">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Hora</label>
+            <select id="modalTime" class="w-full p-2.5 rounded-xl border border-pastel-lavender text-xs font-semibold">
+              <option value="09:00">09:00 hs</option>
+              <option value="09:30">09:30 hs</option>
+              <option value="10:00">10:00 hs</option>
+              <option value="10:30">10:30 hs</option>
+              <option value="11:00">11:00 hs</option>
+              <option value="14:00">14:00 hs</option>
+              <option value="14:30">14:30 hs</option>
+              <option value="15:00">15:00 hs</option>
+              <option value="16:00">16:00 hs</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Alerta de Bloqueo / Vacaciones -->
+        <div id="bookingBlockAlert" class="hidden p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-800">
+          ⚠️ <strong>Médico no disponible:</strong> <span id="bookingBlockReason"></span>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Nombre y Apellido *</label>
+          <input type="text" id="modalPatientName" required placeholder="Ej: Sofía Gómez" class="w-full p-2.5 rounded-xl border border-pastel-lavender text-xs">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">WhatsApp *</label>
+            <input type="tel" id="modalPatientPhone" required placeholder="Ej: 5491155443322" class="w-full p-2.5 rounded-xl border border-pastel-lavender text-xs">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">DNI</label>
+            <input type="text" id="modalPatientDni" placeholder="Ej: 38.123.456" class="w-full p-2.5 rounded-xl border border-pastel-lavender text-xs">
+          </div>
+        </div>
+
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeBookingModal()" class="px-4 py-2 text-xs font-bold text-slate-500">Cancelar</button>
+          <button type="submit" id="btnSubmitBooking" class="px-5 py-2.5 rounded-xl bg-pastel-deepSage hover:bg-pastel-forest text-white text-xs font-bold shadow-md">
+            Confirmar Turno
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL ASISTENTE GEMINI AI -->
+  <div id="aiModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+    <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl border border-pastel-lavender overflow-hidden flex flex-col h-[580px]">
+      <div class="px-6 py-4 bg-gradient-to-r from-pastel-lavender via-pastel-lavenderLight to-pastel-mint border-b border-pastel-lavender flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-white flex items-center justify-center text-pastel-lavenderDeep shadow-sm">
+            <i data-lucide="sparkles" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-slate-900">Asistente OftalmoCare (Google AI Studio)</h3>
+            <p class="text-[11px] text-slate-600">Triage médico y orientación visual con Gemini</p>
+          </div>
+        </div>
+        <button onclick="closeAIModal()" class="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center text-slate-600 hover:text-slate-900">✕</button>
+      </div>
+
+      <div id="aiChatBox" class="flex-1 p-4 overflow-y-auto space-y-3 bg-slate-50/50 text-xs">
+        <div class="p-3.5 rounded-2xl bg-white border border-pastel-lavender text-slate-800 leading-relaxed shadow-sm">
+          ¡Hola! Soy tu asistente de OftalmoCare impulsado por Google AI Studio 👁️✨. Puedo responder dudas sobre fondo de ojo, dilatación de pupilas, lentes de contacto o sugerirte el médico indicado. ¿En qué te oriento hoy?
+        </div>
+      </div>
+
+      <!-- Sugerencias rápidas -->
+      <div class="px-3 py-2 bg-white border-t border-pastel-lavender flex gap-2 overflow-x-auto text-[11px]">
+        <button onclick="sendQuickPrompt('¿Tengo que ir con acompañante si me dilatan la pupila?')" class="px-3 py-1 rounded-full bg-pastel-lavenderLight text-pastel-lavenderDeep border border-pastel-lavender whitespace-nowrap">Dilatación de pupila</button>
+        <button onclick="sendQuickPrompt('¿Puedo usar lentes de contacto antes de la consulta?')" class="px-3 py-1 rounded-full bg-pastel-lavenderLight text-pastel-lavenderDeep border border-pastel-lavender whitespace-nowrap">Lentes de contacto</button>
+        <button onclick="sendQuickPrompt('¿Qué especialista atiende glaucoma y presión ocular?')" class="px-3 py-1 rounded-full bg-pastel-lavenderLight text-pastel-lavenderDeep border border-pastel-lavender whitespace-nowrap">Glaucoma</button>
+      </div>
+
+      <div class="p-3 bg-white border-t border-pastel-lavender flex items-center gap-2">
+        <input type="text" id="aiInput" placeholder="Escribe tu consulta oftalmológica..." onkeydown="if(event.key==='Enter') sendAIMessage()" class="flex-1 p-2.5 rounded-xl border border-pastel-lavender text-xs outline-none">
+        <button onclick="sendAIMessage()" class="p-2.5 rounded-xl bg-pastel-lavenderDeep text-white text-xs font-bold">Enviar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- WHATSAPP FLOATING BUTTON -->
+  <a href="https://wa.me/5491145892011?text=Hola%20OftalmoCare,%20quisiera%20consultar%20por%20turnos" target="_blank" class="fixed bottom-6 right-6 z-40 w-14 h-14 rounded-full bg-[#25D366] hover:bg-[#20ba5a] text-white flex items-center justify-center shadow-lg transition-transform hover:scale-110">
+    <i data-lucide="message-circle" class="w-7 h-7"></i>
+  </a>
+
+  <!-- LOGICA JS AUTONOMA -->
+  <script>
+    const SERVICES = [
+      { title: 'Consulta General & Refracción', desc: 'Graduación de anteojos y control visual anual.', icon: 'glasses', color: 'mint' },
+      { title: 'Fondo de Ojo & Retina', desc: 'Requiere dilatación de pupilas. Concurrir con lentes oscuros y acompañante.', icon: 'eye', color: 'lavender' },
+      { title: 'Presión Ocular & Glaucoma', desc: 'Tonometría y monitoreo del nervio óptico.', icon: 'activity', color: 'mint' },
+      { title: 'Cataratas & Cirugía Refractiva', desc: 'Evaluación quirúrgica y lentes intraoculares multifocales.', icon: 'sparkles', color: 'lavender' },
+      { title: 'Oftalmología Pediátrica', desc: 'Control visual en bebés y niños. Detección de estrabismo.', icon: 'baby', color: 'mint' },
+      { title: 'Adaptación Lentes de Contacto', desc: 'No usar lentes 24 horas antes de la prueba.', icon: 'shield-check', color: 'lavender' }
+    ];
+
+    const DEFAULT_DOCTORS = [
+      { id: 'doc-1', name: 'Dra. Sofía Albarracín', specialty: 'Retina y Fondo de Ojo', photo: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=200' },
+      { id: 'doc-2', name: 'Dr. Mariano Benítez', specialty: 'Glaucoma y Cataratas', photo: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=200' },
+      { id: 'doc-3', name: 'Dra. Lucía Valenzuela', specialty: 'Oftalmología Pediátrica', photo: 'https://images.unsplash.com/photo-1594824813511-13c5188f5d05?auto=format&fit=crop&q=80&w=200' }
+    ];
+
+    // LocalStorage Data
+    function getStored(key, fallback) {
+      const d = localStorage.getItem(key);
+      return d ? JSON.parse(d) : fallback;
+    }
+    function setStored(key, val) {
+      localStorage.setItem(key, JSON.stringify(val));
+    }
+
+    let doctors = getStored('oftalmo_doctors', DEFAULT_DOCTORS);
+    let blocks = getStored('oftalmo_blocks', [
+      { id: 'b-1', doctor_id: 'doc-2', type: 'Vacaciones', start_date: '2026-10-10', end_date: '2026-10-20', reason: 'Vacaciones de primavera' }
+    ]);
+    let appointments = getStored('oftalmo_appointments', [
+      { id: 'a-1', doctor_id: 'doc-1', patient_name: 'Camila Rodriguez', patient_phone: '5491155443322', patient_dni: '38.452.190', service: 'Fondo de Ojo & Retina', date: '2026-10-02', time: '10:30', status: 'confirmado', reminder_sent: false }
+    ]);
+
+    // RENDER HERO DOCTORS
+    function renderHeroDoctors() {
+      const container = document.getElementById('heroDoctorsList');
+      container.innerHTML = doctors.slice(0, 2).map(doc => `
+        <div class="p-3.5 rounded-2xl bg-white/90 border border-pastel-lavender flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <img src="${doc.photo}" class="w-10 h-10 rounded-full object-cover ring-2 ring-pastel-deepSage/40" />
+            <div>
+              <h4 class="text-xs font-bold text-slate-800">${doc.name}</h4>
+              <p class="text-[11px] text-pastel-deepSage font-medium">${doc.specialty}</p>
+            </div>
+          </div>
+          <button onclick="openBookingModal('${doc.id}')" class="text-xs font-bold px-3 py-1.5 rounded-xl bg-pastel-mint text-pastel-forest hover:bg-pastel-mintDark">Turnos</button>
+        </div>
+      `).join('');
+    }
+
+    // RENDER SERVICES
+    function renderServices() {
+      const container = document.getElementById('servicesGrid');
+      container.innerHTML = SERVICES.map(s => `
+        <div class="p-6 rounded-3xl bg-white border border-pastel-lavender shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+          <div>
+            <div class="w-10 h-10 rounded-xl bg-pastel-${s.color} text-pastel-forest flex items-center justify-center mb-4">
+              <i data-lucide="${s.icon}" class="w-5 h-5"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 mb-2">${s.title}</h3>
+            <p class="text-xs text-slate-600 leading-relaxed mb-4">${s.desc}</p>
+          </div>
+          <button onclick="openBookingModal('', '${s.title}')" class="w-full py-2.5 rounded-xl bg-pastel-lavender text-pastel-lavenderDeep hover:bg-pastel-lavenderDeep hover:text-white text-xs font-bold transition-colors">
+            Sacar Turno
+          </button>
+        </div>
+      `).join('');
+    }
+
+    // RENDER APPOINTMENTS TABLE
+    function renderAppointments() {
+      const tbody = document.getElementById('appointmentsTableBody');
+      if (appointments.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="p-6 text-center text-slate-400">No hay turnos registrados</td></tr>';
+        return;
+      }
+      tbody.innerHTML = appointments.map(a => {
+        const doc = doctors.find(d => d.id === a.doctor_id);
+        const reminderLink = getReminderLink(a, doc?.name);
+        return `
+          <tr class="hover:bg-pastel-lavenderLight/30">
+            <td class="py-3 px-5">
+              <strong class="text-slate-900">${a.patient_name}</strong>
+              <div class="text-[11px] text-slate-500">📱 ${a.patient_phone} ${a.patient_dni ? '• DNI: ' + a.patient_dni : ''}</div>
+            </td>
+            <td class="py-3 px-5">
+              <div>${a.service}</div>
+              <div class="text-[11px] text-pastel-lavenderDeep font-semibold">${doc?.name || 'Médico'}</div>
+            </td>
+            <td class="py-3 px-5">
+              <strong>${a.date}</strong> a las ${a.time} hs
+            </td>
+            <td class="py-3 px-5">
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${a.status === 'confirmado' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
+                ${a.status.toUpperCase()}
+              </span>
+            </td>
+            <td class="py-3 px-5 text-right whitespace-nowrap">
+              <a href="${reminderLink}" target="_blank" onclick="markReminderSent('${a.id}')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold text-xs shadow-sm">
+                💬 Recordar WhatsApp
+              </a>
+              ${a.reminder_sent ? '<span class="block text-[10px] text-emerald-600 font-semibold mt-0.5">✓ Enviado</span>' : ''}
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // RENDER BLOCKS
+    function renderBlocks() {
+      const container = document.getElementById('blocksList');
+      if (blocks.length === 0) {
+        container.innerHTML = '<p class="text-xs text-slate-400 py-4">No hay bloqueos activos.</p>';
+        return;
+      }
+      container.innerHTML = blocks.map(b => {
+        const doc = doctors.find(d => d.id === b.doctor_id);
+        return `
+          <div class="py-3 flex items-center justify-between">
+            <div>
+              <span class="font-bold text-slate-900 text-xs">${doc?.name}</span>
+              <span class="ml-2 text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">${b.type}</span>
+              <p class="text-xs text-slate-600">${b.reason} (${b.start_date} al ${b.end_date})</p>
+            </div>
+            <button onclick="deleteBlock('${b.id}')" class="text-rose-500 hover:text-rose-700 text-xs font-bold">Eliminar</button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // WHATSAPP REMINDER LINK
+    function getReminderLink(apt, docName) {
+      let extra = '';
+      if (apt.service.toLowerCase().includes('fondo de ojo')) {
+        extra = '%0A💡 *Importante:* Se colocarán gotas para dilatar la pupila. Traer lentes de sol y acompañante (NO conducir).';
+      } else if (apt.service.toLowerCase().includes('lente')) {
+        extra = '%0A💡 *Importante:* Suspender uso de lentes de contacto 24h antes.';
+      }
+      const msg = `🔔 *RECORDATORIO DE TURNO MÉDICO - OftalmoCare*%0A%0AHola *${apt.patient_name}*, te recordamos tu turno oftalmológico:%0A📅 Fecha: ${apt.date}%0A⏰ Hora: ${apt.time} hs%0A👨‍⚕️ Médico: ${docName}%0A🩺 Estudio: ${apt.service}%0A📍 Av. Santa Fe 3420, Piso 4${extra}%0A%0A¿Nos confirmas tu asistencia respondiendo *SI CONFIRMO*? ¡Gracias!`;
+      return `https://wa.me/${apt.patient_phone.replace(/[^0-9]/g,'')}?text=${msg}`;
+    }
+
+    function markReminderSent(id) {
+      appointments = appointments.map(a => a.id === id ? { ...a, reminder_sent: true } : a);
+      setStored('oftalmo_appointments', appointments);
+      renderAppointments();
+    }
+
+    // CREATE BLOCK
+    function handleCreateBlock(e) {
+      e.preventDefault();
+      const newBlock = {
+        id: 'b-' + Date.now(),
+        doctor_id: document.getElementById('blockDoctorSelect').value,
+        type: document.getElementById('blockTypeSelect').value,
+        start_date: document.getElementById('blockStartDate').value,
+        end_date: document.getElementById('blockEndDate').value,
+        reason: document.getElementById('blockReason').value
+      };
+      blocks.unshift(newBlock);
+      setStored('oftalmo_blocks', blocks);
+      renderBlocks();
+      e.target.reset();
+      alert('¡Bloqueo de horario / vacaciones registrado exitosamente!');
+    }
+
+    function deleteBlock(id) {
+      blocks = blocks.filter(b => b.id !== id);
+      setStored('oftalmo_blocks', blocks);
+      renderBlocks();
+    }
+
+    // BOOKING MODAL & CHECK BLOCK
+    function openBookingModal(preDocId = '', preService = '') {
+      document.getElementById('modalService').innerHTML = SERVICES.map(s => `
+        <option value="${s.title}" ${s.title === preService ? 'selected' : ''}>${s.title}</option>
+      `).join('');
+
+      document.getElementById('modalDoctor').innerHTML = doctors.map(d => `
+        <option value="${d.id}" ${d.id === preDocId ? 'selected' : ''}>${d.name} (${d.specialty})</option>
+      `).join('');
+
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      document.getElementById('modalDate').value = tomorrow.toISOString().split('T')[0];
+      checkSelectedDateBlock();
+
+      document.getElementById('bookingModal').classList.remove('hidden');
+    }
+
+    function closeBookingModal() {
+      document.getElementById('bookingModal').classList.add('hidden');
+    }
+
+    function checkSelectedDateBlock() {
+      const docId = document.getElementById('modalDoctor').value;
+      const dateVal = document.getElementById('modalDate').value;
+      const alertBox = document.getElementById('bookingBlockAlert');
+      const submitBtn = document.getElementById('btnSubmitBooking');
+
+      const foundBlock = blocks.find(b => b.doctor_id === docId && dateVal >= b.start_date && dateVal <= b.end_date);
+      if (foundBlock) {
+        document.getElementById('bookingBlockReason').innerText = `${foundBlock.type}: ${foundBlock.reason}`;
+        alertBox.classList.remove('hidden');
+        submitBtn.disabled = true;
+        submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      } else {
+        alertBox.classList.add('hidden');
+        submitBtn.disabled = false;
+        submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+      }
+    }
+
+    function handleConfirmBooking(e) {
+      e.preventDefault();
+      const docId = document.getElementById('modalDoctor').value;
+      const doc = doctors.find(d => d.id === docId);
+      const newApt = {
+        id: 'a-' + Date.now(),
+        doctor_id: docId,
+        service: document.getElementById('modalService').value,
+        date: document.getElementById('modalDate').value,
+        time: document.getElementById('modalTime').value,
+        patient_name: document.getElementById('modalPatientName').value,
+        patient_phone: document.getElementById('modalPatientPhone').value,
+        patient_dni: document.getElementById('modalPatientDni').value,
+        status: 'confirmado',
+        reminder_sent: false
+      };
+
+      appointments.unshift(newApt);
+      setStored('oftalmo_appointments', appointments);
+      renderAppointments();
+      closeBookingModal();
+
+      // Enviar confirmación a WhatsApp
+      const waMsg = `¡Hola OftalmoCare! Agendé un turno:%0A👤 Paciente: ${newApt.patient_name}%0A👨‍⚕️ Médico: ${doc?.name}%0A🩺 Servicio: ${newApt.service}%0A📅 Fecha: ${newApt.date} a las ${newApt.time} hs`;
+      window.open(`https://wa.me/5491145892011?text=${waMsg}`, '_blank');
+    }
+
+    // AI MODAL GEMINI
+    function openAIModal() { document.getElementById('aiModal').classList.remove('hidden'); }
+    function closeAIModal() { document.getElementById('aiModal').classList.add('hidden'); }
+
+    function sendQuickPrompt(text) {
+      document.getElementById('aiInput').value = text;
+      sendAIMessage();
+    }
+
+    function sendAIMessage() {
+      const input = document.getElementById('aiInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const chat = document.getElementById('aiChatBox');
+      chat.innerHTML += `
+        <div class="flex justify-end">
+          <div class="p-3 rounded-2xl bg-pastel-deepSage text-white max-w-[80%]">${text}</div>
+        </div>
+      `;
+      input.value = '';
+      chat.scrollTop = chat.scrollHeight;
+
+      setTimeout(() => {
+        let resp = 'En OftalmoCare contamos con tecnología láser y especialistas en retina, glaucoma y córnea. Te recomendamos reservar un turno presencial con nuestros especialistas.';
+        const lower = text.toLowerCase();
+        if (lower.includes('dilat') || lower.includes('fondo de ojo') || lower.includes('manejar')) {
+          resp = 'Para estudios con dilatación (fondo de ojo), las gotas dilatan la pupila por 4 a 6 horas. Se recomienda venir con acompañante y lentes de sol 🕶️. Está contraindicado conducir de regreso.';
+        } else if (lower.includes('lente') || lower.includes('contacto')) {
+          resp = 'Para control de graduación o adaptación de lentes de contacto, suspende su uso 24h antes del turno y trae tus anteojos de armazón actuales 👓.';
+        } else if (lower.includes('glaucoma') || lower.includes('presion')) {
+          resp = 'El Dr. Mariano Benítez es especialista en Glaucoma. Realizamos tonometría de aplanación y campo visual. El control anual previene la pérdida de visión silente.';
+        }
+
+        chat.innerHTML += `
+          <div class="flex justify-start">
+            <div class="p-3.5 rounded-2xl bg-white border border-pastel-lavender text-slate-800 max-w-[85%] leading-relaxed shadow-sm">${resp}</div>
+          </div>
+        `;
+        chat.scrollTop = chat.scrollHeight;
+      }, 500);
+    }
+
+    // SWITCH VIEWS
+    function switchView(view) {
+      if (view === 'patient') {
+        document.getElementById('patientView').classList.remove('hidden');
+        document.getElementById('adminView').classList.add('hidden');
+        document.getElementById('btnNavPatient').className = 'px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-pastel-forest shadow-sm';
+        document.getElementById('btnNavAdmin').className = 'px-3 py-1.5 rounded-lg text-xs font-bold text-slate-500 hover:text-slate-800';
+      } else {
+        document.getElementById('patientView').classList.add('hidden');
+        document.getElementById('adminView').classList.remove('hidden');
+        document.getElementById('btnNavAdmin').className = 'px-3 py-1.5 rounded-lg text-xs font-bold bg-pastel-lavenderDeep text-white shadow-sm';
+        document.getElementById('btnNavPatient').className = 'px-3 py-1.5 rounded-lg text-xs font-bold text-slate-500 hover:text-slate-800';
+      }
+    }
+
+    function switchAdminTab(tab) {
+      if (tab === 'appointments') {
+        document.getElementById('adminTabAppointments').classList.remove('hidden');
+        document.getElementById('adminTabBlocks').classList.add('hidden');
+        document.getElementById('tabBtnAppointments').className = 'px-4 py-2 rounded-xl text-xs font-bold bg-pastel-deepSage text-white';
+        document.getElementById('tabBtnBlocks').className = 'px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900';
+      } else {
+        document.getElementById('adminTabAppointments').classList.add('hidden');
+        document.getElementById('adminTabBlocks').classList.remove('hidden');
+        document.getElementById('tabBtnBlocks').className = 'px-4 py-2 rounded-xl text-xs font-bold bg-pastel-lavenderDeep text-white';
+        document.getElementById('tabBtnAppointments').className = 'px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900';
+      }
+    }
+
+    // INIT
+    window.addEventListener('DOMContentLoaded', () => {
+      renderHeroDoctors();
+      renderServices();
+      renderAppointments();
+      renderBlocks();
+
+      // Rellenar select de médicos en bloqueos
+      document.getElementById('blockDoctorSelect').innerHTML = doctors.map(d => `
+        <option value="${d.id}">${d.name} (${d.specialty})</option>
+      `).join('');
+
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>
